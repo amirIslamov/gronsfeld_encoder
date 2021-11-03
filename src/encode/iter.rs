@@ -1,7 +1,7 @@
-use crate::encode::SinglePermutationEncoded;
+use crate::encode::GronsfeldEncoded;
 
 pub struct EncodedIter<'a, 'b> {
-    encoded: SinglePermutationEncoded<'a, 'b>,
+    encoded: GronsfeldEncoded<'a, 'b>,
     pos: usize
 }
 
@@ -19,7 +19,7 @@ impl<'a, 'b, 'c> Iterator for EncodedIter<'a, 'b> {
     }
 }
 
-impl<'a, 'b, 'c> IntoIterator for SinglePermutationEncoded<'a, 'b> {
+impl<'a, 'b, 'c> IntoIterator for GronsfeldEncoded<'a, 'b> {
     type Item = u8;
     type IntoIter = EncodedIter<'a, 'b>;
 

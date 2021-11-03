@@ -1,7 +1,7 @@
-use crate::decode::SinglePermutationDecoded;
+use crate::decode::GronsfeldDecoded;
 
 pub struct DecodedIter<'a, 'b> {
-    decoded: SinglePermutationDecoded<'a, 'b>,
+    decoded: GronsfeldDecoded<'a, 'b>,
     pos: usize
 }
 
@@ -19,7 +19,7 @@ impl<'a, 'b, 'c> Iterator for DecodedIter<'a, 'b> {
     }
 }
 
-impl<'a, 'b, 'c> IntoIterator for SinglePermutationDecoded<'a, 'b> {
+impl<'a, 'b, 'c> IntoIterator for GronsfeldDecoded<'a, 'b> {
     type Item = u8;
     type IntoIter = DecodedIter<'a, 'b>;
 

@@ -1,6 +1,6 @@
 use clap::{App, Arg, SubCommand};
-use single_permutation_encoder::cli::{Args, double_perm_decode, double_perm_encode, parse_config};
-use single_permutation_encoder::cli::error::{DecodingError, EncodingError};
+use gronsfeld_encoder::cli::{Args, double_perm_decode, double_perm_encode, parse_config};
+use gronsfeld_encoder::cli::error::{DecodingError, EncodingError};
 
 fn main() {
     let app = App::new("Double permutation encoder/decoder")
@@ -23,7 +23,7 @@ fn main() {
                 .arg(Arg::new("key")
                     .short('k')
                     .about("sets key file location")
-                    .required(true))
+                    .required(true)))
         .subcommand(
             SubCommand::with_name("decode")
                 .about("decodes input file using a pair of keys")
@@ -41,7 +41,6 @@ fn main() {
                     .short('k')
                     .about("sets key file location")
                     .required(true))
-                )
     );
 
     let matches = app.get_matches();
@@ -55,8 +54,6 @@ fn main() {
                 Err(err) => match err {
                     EncodingError::IoError(io_err) =>
                         { eprintln!("An error occurred while reading one of provided files \nDetails: {} ", io_err) }
-                    EncodingError::KeyReadingError(_) =>
-                        { eprintln!("An error occurred while reading encryption key file \nDetails: Key does not correspond to the specified format") }
                     EncodingError::EncoderCreationError(_) =>
                         { eprintln!("An error occurred while creating an encoder \nDetails: Key is empty") }
                 }
@@ -66,8 +63,6 @@ fn main() {
                 Err(err) => match err {
                     DecodingError::IoError(io_err) =>
                         { eprintln!("An error occurred while reading one of provided files \nDetails: {} ", io_err) }
-                    DecodingError::KeyReadingError(_) =>
-                        { eprintln!("An error occurred while reading encryption key file \nDetails: Key does not correspond to the specified format") }
                     DecodingError::DecoderCreationError(_) =>
                         { eprintln!("An error occurred while creating a decoder \nDetails: Key is empty") }
                 }

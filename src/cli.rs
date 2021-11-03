@@ -1,12 +1,9 @@
 use std::path::Path;
 use clap::ArgMatches;
-use crate::encode::SinglePermutationEncoded;
+use crate::encode::GronsfeldEncoded;
 use std::fs;
-use std::fs::File;
-use std::io::Read;
-use std::num::ParseIntError;
-use crate::decode::SinglePermutationDecoded;
-use crate::cli::error::{DecodingError, EncodingError, KeyReadingError};
+use crate::decode::GronsfeldDecoded;
+use crate::cli::error::{DecodingError, EncodingError};
 
 
 pub mod error;
@@ -24,10 +21,10 @@ pub struct Conf<'a> {
 
 pub fn double_perm_encode(cfg: Conf) -> Result<(), EncodingError> {
     let input = fs::read(cfg.inp)?;
-    let key = read_key(cfg.key)?;
+    let key = fs::read(cfg.key)?;
 
     let encoded =
-        SinglePermutationEncoded::new(&input, &key)?;
+        GronsfeldEncoded::new(&input, &key)?;
 
     let output: Vec<u8> = encoded.into_iter().collect();
     fs::write(cfg.out, output)?;
@@ -37,9 +34,9 @@ pub fn double_perm_encode(cfg: Conf) -> Result<(), EncodingError> {
 
 pub fn double_perm_decode(cfg: Conf) -> Result<(), DecodingError> {
     let input = fs::read(cfg.inp)?;
-    let key = read_key(cfg.key)?;
+    let key = fs::read(cfg.key)?;
 
-    let encoded = SinglePermutationDecoded::new(&input, &key)?;
+    let encoded = GronsfeldDecoded::new(&input, &key)?;
 
     let output: Vec<u8> = encoded.into_iter().collect();
     fs::write(cfg.out, output)?;
@@ -73,18 +70,4 @@ pub fn parse_config(matches: &ArgMatches) -> Option<Args> {
     }
 
     None
-}
-
-pub fn read_key(p: &Path) -> Result<Vec<usize>, KeyReadingError> {
-    let mut file = File::open(p)?;
-    let mut contents = String::new();
-
-    file.read_to_string(&mut contents)?;
-
-    let key_result: Result<Vec<usize>, ParseIntError> =
-        contents.split_whitespace().map(|x| x.parse()).collect();
-
-    let key = key_result?;
-
-    Ok(key)
 }
